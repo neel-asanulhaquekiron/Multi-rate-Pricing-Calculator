@@ -1,3 +1,4 @@
+import { FileText, Percent, TicketPercent, Wallet } from "lucide-react";
 import { useState } from "react";
 import { formatMoney } from "shared";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,7 @@ import { monthStartYmd, todayYmd } from "@/lib/localDate";
 import { useLoad } from "@/lib/useLoad";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { Field } from "@/components/Field";
+import { StatCard } from "@/components/StatCard";
 
 interface ReportSummary {
   documentCount: number;
@@ -49,16 +51,24 @@ export const ReportsPage = () => {
         </div>
       </div>
 
-      {state.status === "loading" && <Skeleton className="h-24 w-full" />}
+      {state.status === "loading" && (
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+        </div>
+      )}
 
       {state.status === "error" && <ErrorAlert message={state.message} />}
 
       {state.status === "ready" && (
-        /* Temporary rendering — replaced by StatCards in 6.5.3 */
-        <p className="text-sm text-muted-foreground">
-          {state.data.documentCount} documents · grand total ${formatMoney(state.data.grandTotalCents)} · tax $
-          {formatMoney(state.data.taxCents)} · discount ${formatMoney(state.data.discountCents)}
-        </p>
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <StatCard label="Documents" value={String(state.data.documentCount)} icon={FileText} />
+          <StatCard label="Grand total" value={`$${formatMoney(state.data.grandTotalCents)}`} icon={Wallet} />
+          <StatCard label="Total tax" value={`$${formatMoney(state.data.taxCents)}`} icon={Percent} />
+          <StatCard label="Total discount" value={`$${formatMoney(state.data.discountCents)}`} icon={TicketPercent} />
+        </div>
       )}
     </div>
   );
