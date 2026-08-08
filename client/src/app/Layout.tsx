@@ -2,6 +2,7 @@ import { LogOut } from "lucide-react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useAuth } from "@/features/auth/AuthContext";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }): string => {
@@ -39,10 +40,20 @@ export const Layout = () => {
             <span className="hidden truncate text-xs text-muted-foreground md:inline" title={user.email}>
               {user.email}
             </span>
-            <Button variant="ghost" size="sm" onClick={onLogout} aria-label="log out" className="shrink-0">
-              <LogOut className="h-4 w-4 sm:hidden" aria-hidden />
-              <span className="hidden sm:inline">Log out</span>
-            </Button>
+            <ConfirmDialog
+              trigger={
+                <Button variant="ghost" size="sm" aria-label="log out" className="shrink-0">
+                  <LogOut className="h-4 w-4 sm:hidden" aria-hidden />
+                  <span className="hidden sm:inline">Log out</span>
+                </Button>
+              }
+              title="Log out?"
+              description="You'll need to sign in again to access your documents."
+              actionLabel="Log out"
+              busyLabel="Logging out…"
+              actionVariant="default"
+              onConfirm={onLogout}
+            />
           </>
         ) : (
           <>
