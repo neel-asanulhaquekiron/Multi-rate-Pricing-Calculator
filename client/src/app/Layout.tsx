@@ -1,3 +1,4 @@
+import { LogOut } from "lucide-react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -5,7 +6,7 @@ import { useAuth } from "@/features/auth/AuthContext";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }): string => {
   return cn(
-    "text-sm font-medium transition-colors hover:text-foreground",
+    "shrink-0 text-sm font-medium whitespace-nowrap transition-colors hover:text-foreground",
     isActive ? "text-foreground" : "text-muted-foreground",
   );
 };
@@ -22,8 +23,8 @@ export const Layout = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <nav className="flex h-14 items-center gap-6 border-b bg-card px-6 print:hidden">
-        <Link to="/documents" className="font-bold">
+      <nav className="flex h-14 items-center gap-3 border-b bg-card px-4 sm:gap-6 sm:px-6 print:hidden">
+        <Link to="/documents" className="shrink-0 font-bold whitespace-nowrap">
           Pricing Calculator
         </Link>
         {user ? (
@@ -35,9 +36,12 @@ export const Layout = () => {
               Report
             </NavLink>
             <span className="flex-1" />
-            <span className="text-xs text-muted-foreground">{user.email}</span>
-            <Button variant="ghost" size="sm" onClick={onLogout}>
-              Log out
+            <span className="hidden truncate text-xs text-muted-foreground md:inline" title={user.email}>
+              {user.email}
+            </span>
+            <Button variant="ghost" size="sm" onClick={onLogout} aria-label="log out" className="shrink-0">
+              <LogOut className="h-4 w-4 sm:hidden" aria-hidden />
+              <span className="hidden sm:inline">Log out</span>
             </Button>
           </>
         ) : (
