@@ -1,4 +1,6 @@
-import { useParams } from "react-router-dom";
+import { ArrowLeft, Printer } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
@@ -33,6 +35,20 @@ export const PrintPage = () => {
 
   return (
     <div className="mx-auto max-w-3xl space-y-8 py-4">
+      <div className="flex items-center justify-between print:hidden">
+        <Link
+          to={`/documents/${doc.id}`}
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden />
+          Back to document
+        </Link>
+        <Button onClick={() => window.print()}>
+          <Printer className="h-4 w-4" aria-hidden />
+          Print / Save as PDF
+        </Button>
+      </div>
+
       <header className="space-y-4">
         <div className="flex items-baseline justify-between gap-4">
           <h1 className="text-3xl font-bold">{doc.title}</h1>
