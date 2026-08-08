@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
 import { useLoad } from "@/lib/useLoad";
@@ -10,7 +10,7 @@ import { AddLineForm } from "@/features/documents/AddLineForm";
 import { LineTable } from "@/features/documents/LineTable";
 import { MetadataForm } from "@/features/documents/MetadataForm";
 import { StatusBadge } from "@/features/documents/StatusBadge";
-import { TotalsPanel } from "@/features/documents/TotalsPanel";
+import { TotalsCard } from "@/features/documents/TotalsCard";
 import type { DocumentDto } from "@/lib/types";
 
 /**
@@ -20,6 +20,15 @@ import type { DocumentDto } from "@/lib/types";
  */
 export const DocumentEditorPage = () => {
   const { id } = useParams<{ id: string }>();
+
+  // Totals position survives reloads — long-document users set it once.
+  const [totalsPinned, setTotalsPinned] = useState(() => localStorage.getItem("totalsPinned") === "1");
+  const toggleTotalsPinned = () => {
+    setTotalsPinned((prev) => {
+      localStorage.setItem("totalsPinned", prev ? "0" : "1");
+      return !prev;
+    });
+  };
 
   const { state, setData } = useLoad(
     () => api.get<{ document: DocumentDto }>(`/api/documents/${id}`).then((res) => res.document),
@@ -64,44 +73,31 @@ export const DocumentEditorPage = () => {
 
       <MetadataForm doc={doc} onChange={(updated) => setData(() => updated)} />
 
-      {/* Table left; add-line + totals in a sticky sidebar so they stay
-          visible however long the table grows. */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+      {/* Flow: add-line first, then the table, totals last — with a toggle
+          that moves totals up next to the form on long documents. */}
+      {doc.status === "draft" && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Line items</CardTitle>
+            <CardTitle className="text-base">Add line item</CardTitle>
           </CardHeader>
           <CardContent>
-            <LineTable lines={doc.lines ?? []} />
+            <AddLineForm doc={doc} onChange={(updated) => setData(() => updated)} />
           </CardContent>
         </Card>
+      )}
 
-        <div className="space-y-6 lg:sticky lg:top-6">
-          {doc.status === "draft" && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Add line item</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <AddLineForm doc={doc} onChange={(updated) => setData(() => updated)} />
-              </CardContent>
-            </Card>
-          )}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Totals</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TotalsPanel
-                subtotalCents={doc.subtotalCents}
-                discountCents={doc.discountCents}
-                taxCents={doc.taxCents}
-                grandTotalCents={doc.grandTotalCents}
-              />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      {totalsPinned && <TotalsCard doc={doc} pinned onTogglePinned={toggleTotalsPinned} />}
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Line items</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <LineTable lines={doc.lines ?? []} />
+        </CardContent>
+      </Card>
+
+      {!totalsPinned && <TotalsCard doc={doc} pinned={false} onTogglePinned={toggleTotalsPinned} />}
     </div>
   );
 };
