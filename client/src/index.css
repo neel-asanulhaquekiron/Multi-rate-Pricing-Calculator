@@ -260,6 +260,34 @@ body {
   margin-top: 4px;
 }
 
+.password-wrap {
+  position: relative;
+  display: flex;
+}
+
+.password-wrap input {
+  flex: 1;
+  padding-right: 38px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  padding: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle:hover {
+  color: var(--ink);
+}
+
 /* --- Print (used by 6.6) ---------------------------------------------- */
 
 @media print {
