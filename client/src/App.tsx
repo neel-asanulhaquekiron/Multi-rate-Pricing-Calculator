@@ -1,7 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./Layout";
 import { RequireAuth } from "./RequireAuth";
-import { DocumentEditorPage, DocumentsPage, LoginPage, PrintPage, ReportsPage, SignupPage } from "./pages/stubs";
+import { LoginPage } from "./pages/LoginPage";
+import { DocumentEditorPage, DocumentsPage, PrintPage, ReportsPage, SignupPage } from "./pages/stubs";
 
 /**
  * Route map:
