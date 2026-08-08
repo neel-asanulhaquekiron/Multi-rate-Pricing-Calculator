@@ -1,8 +1,13 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { signupSchema } from "shared";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
+import { ErrorAlert } from "../components/ErrorAlert";
+import { Field } from "../components/Field";
 import { PasswordInput } from "../components/PasswordInput";
 
 interface FieldErrors {
@@ -57,44 +62,45 @@ export const SignupPage = () => {
   };
 
   return (
-    <div className="card auth-card">
-      <h1>Sign up</h1>
-      {error && (
-        <div className="banner banner-error" role="alert">
-          {error}
-        </div>
-      )}
+    <Card className="mx-auto mt-12 max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-xl">Sign up</CardTitle>
+      </CardHeader>
       <form onSubmit={onSubmit} noValidate>
-        <div className="field">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            autoComplete="email"
-            aria-invalid={fieldErrors.email !== undefined}
-          />
-          {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
-        </div>
-        <div className="field">
-          <label htmlFor="password">Password</label>
-          <PasswordInput
-            id="password"
-            value={password}
-            onChange={setPassword}
-            autoComplete="new-password"
-            invalid={fieldErrors.password !== undefined}
-          />
-          {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
-        </div>
-        <button type="submit" className="btn btn-primary" disabled={submitting}>
-          {submitting ? "Creating account…" : "Create account"}
-        </button>
+        <CardContent className="space-y-4">
+          <ErrorAlert message={error} />
+          <Field id="email" label="Email" error={fieldErrors.email}>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+              aria-invalid={fieldErrors.email !== undefined}
+            />
+          </Field>
+          <Field id="password" label="Password" error={fieldErrors.password}>
+            <PasswordInput
+              id="password"
+              value={password}
+              onChange={setPassword}
+              autoComplete="new-password"
+              invalid={fieldErrors.password !== undefined}
+            />
+          </Field>
+        </CardContent>
+        <CardFooter className="mt-6 flex-col gap-3">
+          <Button type="submit" className="w-full" disabled={submitting}>
+            {submitting ? "Creating account…" : "Create account"}
+          </Button>
+          <p className="text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link to="/login" className="underline underline-offset-4 hover:text-foreground">
+              Log in
+            </Link>
+          </p>
+        </CardFooter>
       </form>
-      <p className="muted">
-        Already have an account? <Link to="/login">Log in</Link>
-      </p>
-    </div>
+    </Card>
   );
 };
