@@ -1,11 +1,16 @@
 import { ArrowLeft } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
 import { useLoad } from "@/lib/useLoad";
 import { ErrorAlert } from "@/components/ErrorAlert";
+import { AddLineForm } from "@/features/documents/AddLineForm";
+import { LineTable } from "@/features/documents/LineTable";
 import { MetadataForm } from "@/features/documents/MetadataForm";
 import { StatusBadge } from "@/features/documents/StatusBadge";
+import { TotalsPanel } from "@/features/documents/TotalsPanel";
 import type { DocumentDto } from "@/lib/types";
 
 /**
@@ -59,7 +64,27 @@ export const DocumentEditorPage = () => {
 
       <MetadataForm doc={doc} onChange={(updated) => setData(() => updated)} />
 
-      {/* Line items land in 6.4.2 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Line items</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <LineTable lines={doc.lines ?? []} />
+          {doc.status === "draft" && (
+            <>
+              <Separator />
+              <AddLineForm doc={doc} onChange={(updated) => setData(() => updated)} />
+            </>
+          )}
+          <Separator />
+          <TotalsPanel
+            subtotalCents={doc.subtotalCents}
+            discountCents={doc.discountCents}
+            taxCents={doc.taxCents}
+            grandTotalCents={doc.grandTotalCents}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };
