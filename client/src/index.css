@@ -245,6 +245,21 @@ body {
   color: var(--muted);
 }
 
+.auth-card {
+  max-width: 380px;
+  margin: 48px auto 0;
+}
+
+.auth-card h1 {
+  margin: 0 0 16px;
+  font-size: 22px;
+}
+
+.auth-card .btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
 /* --- Print (used by 6.6) ---------------------------------------------- */
 
 @media print {
