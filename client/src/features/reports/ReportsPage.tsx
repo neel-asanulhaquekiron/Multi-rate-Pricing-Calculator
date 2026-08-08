@@ -1,4 +1,4 @@
-import { FileText, Percent, TicketPercent, Wallet } from "lucide-react";
+import { FileText, Lock, Percent, TicketPercent, Wallet } from "lucide-react";
 import { useState } from "react";
 import { formatMoney } from "shared";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,7 @@ export const ReportsPage = () => {
   // Defaults: the browser's current month so far (1st -> today).
   const [from, setFrom] = useState(monthStartYmd());
   const [to, setTo] = useState(todayYmd());
+  const [finalizedOnly, setFinalizedOnly] = useState(false);
 
   const presets = [
     { label: "This month", from: monthStartYmd(), to: todayYmd() },
@@ -38,8 +39,11 @@ export const ReportsPage = () => {
     if (from > to) {
       return Promise.reject(new ApiError(400, "VALIDATION_ERROR", "'from' must be on or before 'to'"));
     }
-    return api.get<{ summary: ReportSummary }>(`/api/reports/summary?from=${from}&to=${to}`).then((res) => res.summary);
-  }, [from, to]);
+    const status = finalizedOnly ? "&status=finalized" : "";
+    return api
+      .get<{ summary: ReportSummary }>(`/api/reports/summary?from=${from}&to=${to}${status}`)
+      .then((res) => res.summary);
+  }, [from, to, finalizedOnly]);
 
   return (
     <div className="space-y-6">
@@ -73,6 +77,15 @@ export const ReportsPage = () => {
               </Button>
             );
           })}
+          <Button
+            variant={finalizedOnly ? "secondary" : "outline"}
+            size="sm"
+            aria-pressed={finalizedOnly}
+            onClick={() => setFinalizedOnly((prev) => !prev)}
+          >
+            <Lock className="h-3.5 w-3.5" aria-hidden />
+            Finalized only
+          </Button>
         </div>
       </div>
 
@@ -97,8 +110,9 @@ export const ReportsPage = () => {
           </div>
           {state.data.documentCount === 0 && (
             <p className="rounded-lg border border-dashed py-6 text-center text-sm text-muted-foreground">
-              No documents were issued between {from} and {to} — totals are zero. Drafts count too, so try a wider
-              range.
+              {finalizedOnly
+                ? `No finalized documents were issued between ${from} and ${to} — totals are zero.`
+                : `No documents were issued between ${from} and ${to} — totals are zero. Drafts count too, so try a wider range.`}
             </p>
           )}
         </>
