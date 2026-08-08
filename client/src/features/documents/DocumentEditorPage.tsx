@@ -64,27 +64,44 @@ export const DocumentEditorPage = () => {
 
       <MetadataForm doc={doc} onChange={(updated) => setData(() => updated)} />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Line items</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <LineTable lines={doc.lines ?? []} />
+      {/* Table left; add-line + totals in a sticky sidebar so they stay
+          visible however long the table grows. */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Line items</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LineTable lines={doc.lines ?? []} />
+          </CardContent>
+        </Card>
+
+        <div className="space-y-6 lg:sticky lg:top-6">
           {doc.status === "draft" && (
-            <>
-              <Separator />
-              <AddLineForm doc={doc} onChange={(updated) => setData(() => updated)} />
-            </>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Add line item</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AddLineForm doc={doc} onChange={(updated) => setData(() => updated)} />
+              </CardContent>
+            </Card>
           )}
-          <Separator />
-          <TotalsPanel
-            subtotalCents={doc.subtotalCents}
-            discountCents={doc.discountCents}
-            taxCents={doc.taxCents}
-            grandTotalCents={doc.grandTotalCents}
-          />
-        </CardContent>
-      </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Totals</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TotalsPanel
+                subtotalCents={doc.subtotalCents}
+                discountCents={doc.discountCents}
+                taxCents={doc.taxCents}
+                grandTotalCents={doc.grandTotalCents}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };

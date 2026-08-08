@@ -9,6 +9,7 @@ import { Field } from "@/components/Field";
 import { MoneyInput } from "@/components/MoneyInput";
 import { PercentInput } from "@/components/PercentInput";
 import { DiscountInput, type DiscountKind } from "@/features/documents/DiscountInput";
+import { DiscountKindToggle } from "@/features/documents/DiscountKindToggle";
 import type { DocumentDto } from "@/lib/types";
 
 interface AddLineFormProps {
@@ -129,7 +130,7 @@ export const AddLineForm = ({ doc, onChange }: AddLineFormProps) => {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
       <ErrorAlert message={error} />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[2fr_0.8fr_1fr_1.6fr_0.9fr_auto] lg:items-start">
+      <div className="space-y-4">
         <Field id="line-description" label="Description" error={fieldErrors.description}>
           <Input
             id="line-description"
@@ -139,44 +140,59 @@ export const AddLineForm = ({ doc, onChange }: AddLineFormProps) => {
             aria-invalid={fieldErrors.description !== undefined}
           />
         </Field>
-        <Field id="line-quantity" label="Quantity" error={fieldErrors.quantity}>
-          <Input
-            id="line-quantity"
-            type="number"
-            min={1}
-            step={1}
-            value={quantity}
-            onChange={(event) => setQuantity(event.target.value)}
-            aria-invalid={fieldErrors.quantity !== undefined}
-          />
-        </Field>
-        <Field id="line-unit-price" label="Unit price" error={fieldErrors.unitPrice}>
-          <MoneyInput
-            id="line-unit-price"
-            value={unitPrice}
-            onChange={setUnitPrice}
-            invalid={fieldErrors.unitPrice !== undefined}
-          />
-        </Field>
-        <Field id="line-discount" label="Discount (optional)" error={fieldErrors.discount}>
-          <DiscountInput
-            id="line-discount"
-            kind={discountKind}
-            value={discountValue}
-            onKindChange={setDiscountKind}
-            onValueChange={setDiscountValue}
-            invalid={fieldErrors.discount !== undefined}
-          />
-        </Field>
-        <Field id="line-tax" label="Tax (optional)" error={fieldErrors.tax}>
-          <PercentInput id="line-tax" value={tax} onChange={setTax} invalid={fieldErrors.tax !== undefined} />
-        </Field>
-        <div className="lg:pt-[22px]">
-          <Button type="submit" disabled={submitting} aria-label="add line">
-            <Plus className="h-4 w-4" aria-hidden />
-            {submitting ? "Adding…" : "Add"}
-          </Button>
+        <div className="grid grid-cols-2 gap-3">
+          <Field id="line-quantity" label="Qty" error={fieldErrors.quantity}>
+            <Input
+              id="line-quantity"
+              type="number"
+              min={1}
+              step={1}
+              value={quantity}
+              onChange={(event) => setQuantity(event.target.value)}
+              aria-invalid={fieldErrors.quantity !== undefined}
+            />
+          </Field>
+          <Field id="line-unit-price" label="Unit price" error={fieldErrors.unitPrice}>
+            <MoneyInput
+              id="line-unit-price"
+              value={unitPrice}
+              onChange={setUnitPrice}
+              invalid={fieldErrors.unitPrice !== undefined}
+            />
+          </Field>
         </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Field
+            id="line-discount"
+            label="Discount"
+            error={fieldErrors.discount}
+            labelExtra={
+              <DiscountKindToggle
+                kind={discountKind}
+                onChange={(kind) => {
+                  setDiscountKind(kind);
+                  // A percent value makes no sense as dollars (and vice versa).
+                  setDiscountValue("");
+                }}
+              />
+            }
+          >
+            <DiscountInput
+              id="line-discount"
+              kind={discountKind}
+              value={discountValue}
+              onValueChange={setDiscountValue}
+              invalid={fieldErrors.discount !== undefined}
+            />
+          </Field>
+          <Field id="line-tax" label="Tax %" error={fieldErrors.tax}>
+            <PercentInput id="line-tax" value={tax} onChange={setTax} invalid={fieldErrors.tax !== undefined} />
+          </Field>
+        </div>
+        <Button type="submit" className="w-full" disabled={submitting}>
+          <Plus className="h-4 w-4" aria-hidden />
+          {submitting ? "Adding…" : "Add line"}
+        </Button>
       </div>
     </form>
   );
