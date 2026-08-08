@@ -142,4 +142,26 @@ describe("GET /api/reports/summary", () => {
     const res = await request(app).get("/api/reports/summary?from=2026-01-01&to=2026-01-31");
     expect(res.status).toBe(401);
   });
+
+  it("status=finalized counts only finalized documents", async () => {
+    const res = await request(app)
+      .get("/api/reports/summary?from=2026-01-01&to=2026-01-31&status=finalized")
+      .set("Cookie", cookie);
+    expect(res.status).toBe(200);
+    // Only "mid" is finalized: 1 x 200.00 - $20 fixed = 180.00
+    expect(res.body.summary).toEqual({
+      documentCount: 1,
+      grandTotalCents: 18000,
+      taxCents: 0,
+      discountCents: 2000,
+    });
+  });
+
+  it("rejects an unknown status value with a specific message", async () => {
+    const res = await request(app)
+      .get("/api/reports/summary?from=2026-01-01&to=2026-01-31&status=draft")
+      .set("Cookie", cookie);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe('status must be "all" or "finalized"');
+  });
 });
