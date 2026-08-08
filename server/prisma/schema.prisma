@@ -1,6 +1,16 @@
 // All tables live in the dedicated "calculator" schema (set via ?schema= in the
 // connection URLs) on a shared Supabase Postgres — isolated from the other app
 // on this database by schema + a low-privilege role that owns only this schema.
+//
+// Money columns are integer CENTS; percent columns are integer BASIS POINTS
+// (7.25% -> 725). Validation caps line subtotals so Int4 cannot overflow
+// (documented in the README). Derived amounts are persisted on every write by
+// the service layer — recomputed via shared/calc in one transaction — so the
+// report can SUM columns without re-implementing math in SQL.
+//
+//   User 1 ── n Document 1 ── n LineItem
+//                 │
+//                 └─ status: draft ──(finalize)──▶ finalized (immutable, incl. delete)
 
 generator client {
   provider = "prisma-client-js"
@@ -12,9 +22,74 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum DocumentStatus {
+  draft
+  finalized
+}
+
+enum DiscountType {
+  percent
+  fixed
+}
+
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
+  id           String     @id @default(uuid())
+  email        String     @unique
   passwordHash String
-  createdAt    DateTime @default(now())
+  createdAt    DateTime   @default(now())
+  documents    Document[]
+}
+
+model Document {
+  id       String @id @default(uuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title    String
+  customer String
+
+  /// Date-only value. API/UI always speak "YYYY-MM-DD" strings (shared/dates.ts);
+  /// only the Prisma boundary touches Date objects.
+  issueDate DateTime       @db.Date
+  status    DocumentStatus @default(draft)
+
+  // Persisted document totals (integer cents), recomputed on every line mutation.
+  subtotalCents   Int @default(0)
+  discountCents   Int @default(0)
+  taxCents        Int @default(0)
+  grandTotalCents Int @default(0)
+
+  lines     LineItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // The summary report filters by owner + issue date range.
+  @@index([userId, issueDate])
+}
+
+model LineItem {
+  id          String   @id @default(uuid())
+  documentId  String
+  document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  description String
+
+  quantity       Int
+  unitPriceCents Int
+
+  /// percent XOR fixed (or none). discountValue holds basis points for
+  /// percent, cents for fixed — which one is defined by discountType.
+  discountType  DiscountType?
+  discountValue Int?
+  /// Tax in basis points; null = no tax.
+  taxBp         Int?
+
+  // Persisted per-line derived amounts (integer cents) from shared/calc.
+  subtotalCents Int
+  discountCents Int
+  taxCents      Int
+  totalCents    Int
+
+  /// Stable display order = (createdAt, id) — decision 12B.
+  createdAt DateTime @default(now())
+
+  @@index([documentId])
 }
