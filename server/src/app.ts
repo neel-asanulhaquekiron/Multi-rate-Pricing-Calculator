@@ -2,7 +2,9 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import { prisma } from "./db";
 import { errorHandler } from "./errors";
+import { requireAuth } from "./middleware/requireAuth";
 import { authRouter } from "./routes/auth";
+import { documentsRouter } from "./routes/documents";
 
 // The app is EXPORTED and never calls listen() here — Vercel wraps it as a
 // serverless function (api/index.ts); local dev uses src/local.ts instead.
@@ -28,6 +30,7 @@ app.get("/api/health", async (_req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/documents", requireAuth, documentsRouter);
 
 // Unknown API paths get a JSON 404, not an HTML error page.
 app.use("/api", (_req, res) => {
