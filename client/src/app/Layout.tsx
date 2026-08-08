@@ -52,7 +52,7 @@ export const Layout = () => {
           </>
         )}
       </nav>
-      <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-8 print:max-w-none print:p-0">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8 print:max-w-none print:p-0">
         <Outlet />
       </main>
     </div>
