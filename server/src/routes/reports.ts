@@ -9,7 +9,7 @@ export const reportsRouter = Router();
 reportsRouter.get(
   "/summary",
   wrap(async (req, res) => {
-    const { from, to } = reportQuerySchema.parse(req.query);
-    res.json({ summary: await reports.getSummary(req.userId as string, from, to) });
+    const { from, to, status } = reportQuerySchema.parse(req.query);
+    res.json({ summary: await reports.getSummary(req.userId as string, from, to, status) });
   }),
 );
