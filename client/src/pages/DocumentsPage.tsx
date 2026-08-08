@@ -5,6 +5,7 @@ import { formatMoney } from "shared";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { api, ApiError } from "../api";
+import { DeleteDraftButton } from "../components/DeleteDraftButton";
 import { ErrorAlert } from "../components/ErrorAlert";
 import { NewDocumentDialog } from "../components/NewDocumentDialog";
 import { StatusBadge } from "../components/StatusBadge";
@@ -18,6 +19,7 @@ type LoadState =
 export const DocumentsPage = () => {
   const navigate = useNavigate();
   const [state, setState] = useState<LoadState>({ status: "loading" });
+  const [actionError, setActionError] = useState<string | null>(null);
 
   useEffect(() => {
     api
@@ -30,12 +32,24 @@ export const DocumentsPage = () => {
       });
   }, []);
 
+  const onDeleted = (id: string) => {
+    setActionError(null);
+    setState((prev) => {
+      if (prev.status !== "ready") {
+        return prev;
+      }
+      return { status: "ready", documents: prev.documents.filter((doc) => doc.id !== id) };
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Documents</h1>
         <NewDocumentDialog />
       </div>
+
+      <ErrorAlert message={actionError} />
 
       {state.status === "loading" && (
         <div className="space-y-2">
@@ -65,6 +79,7 @@ export const DocumentsPage = () => {
                 <TableHead>Issue date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Grand total</TableHead>
+                <TableHead className="w-12" />
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -82,6 +97,11 @@ export const DocumentsPage = () => {
                   </TableCell>
                   <TableCell className="text-right font-medium tabular-nums">
                     ${formatMoney(doc.grandTotalCents)}
+                  </TableCell>
+                  <TableCell>
+                    {doc.status === "draft" && (
+                      <DeleteDraftButton doc={doc} onDeleted={onDeleted} onError={setActionError} />
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
