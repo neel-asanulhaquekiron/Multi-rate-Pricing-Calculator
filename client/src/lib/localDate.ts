@@ -9,3 +9,8 @@ export const todayYmd = (): string => {
   const d = String(now.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
 };
+
+/** First day of the browser's current local month as YYYY-MM-DD. */
+export const monthStartYmd = (): string => {
+  return `${todayYmd().slice(0, 8)}01`;
+};
