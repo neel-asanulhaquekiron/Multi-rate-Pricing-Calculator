@@ -19,6 +19,8 @@ interface ConfirmDialogProps {
   description: string;
   actionLabel: string;
   busyLabel: string;
+  /** Visual weight of the confirm button; destructive red by default. */
+  actionVariant?: "destructive" | "default";
   /** Resolve = close the dialog; throw = stay open (caller surfaces the error). */
   onConfirm: () => Promise<void>;
 }
@@ -28,7 +30,15 @@ interface ConfirmDialogProps {
  * the confirm button shows a spinner and BOTH buttons lock (no double-fire,
  * no escape-close); the dialog closes only after the action succeeds.
  */
-export const ConfirmDialog = ({ trigger, title, description, actionLabel, busyLabel, onConfirm }: ConfirmDialogProps) => {
+export const ConfirmDialog = ({
+  trigger,
+  title,
+  description,
+  actionLabel,
+  busyLabel,
+  actionVariant = "destructive",
+  onConfirm,
+}: ConfirmDialogProps) => {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -61,7 +71,7 @@ export const ConfirmDialog = ({ trigger, title, description, actionLabel, busyLa
         <AlertDialogFooter>
           <AlertDialogCancel disabled={busy}>Cancel</AlertDialogCancel>
           <Button
-            className="bg-destructive text-white hover:bg-destructive/90"
+            className={actionVariant === "destructive" ? "bg-destructive text-white hover:bg-destructive/90" : undefined}
             onClick={confirm}
             disabled={busy}
           >
