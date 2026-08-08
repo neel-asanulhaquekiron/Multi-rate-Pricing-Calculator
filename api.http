@@ -132,6 +132,16 @@ Content-Type: application/json
   "issueDate": "2026-08-08"
 }
 
+###############################################################################
+# Report
+###############################################################################
+
+### Summary for August 2026 — count, grand total, tax, discount (drafts included)
+GET {{baseUrl}}/api/reports/summary?from=2026-08-01&to=2026-08-31
+
+### Report with from > to — expect 400 with specific message
+GET {{baseUrl}}/api/reports/summary?from=2026-09-01&to=2026-08-01
+
 ### Validation demo: fixed discount above subtotal — expect 400 with message
 POST {{baseUrl}}/api/documents/{{createResponseId}}/lines
 Content-Type: application/json
