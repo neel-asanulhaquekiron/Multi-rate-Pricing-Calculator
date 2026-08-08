@@ -11,6 +11,7 @@ import { DuplicateButton } from "@/features/documents/DuplicateButton";
 import { FinalizeButton } from "@/features/documents/FinalizeButton";
 import { LineTable } from "@/features/documents/LineTable";
 import { MetadataForm } from "@/features/documents/MetadataForm";
+import { PrintViewButton } from "@/features/documents/PrintViewButton";
 import { StatusBadge } from "@/features/documents/StatusBadge";
 import { TotalsCard } from "@/features/documents/TotalsCard";
 import type { DocumentDto } from "@/lib/types";
@@ -73,6 +74,7 @@ export const DocumentEditorPage = () => {
           <h1 className="text-2xl font-bold">{doc.title}</h1>
           <StatusBadge status={doc.status} />
           <span className="flex-1" />
+          <PrintViewButton doc={doc} />
           <DuplicateButton doc={doc} onError={setActionError} />
           {doc.status === "draft" && (
             <FinalizeButton
