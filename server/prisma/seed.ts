@@ -7,7 +7,7 @@
  */
 import bcrypt from "bcryptjs";
 import { PrismaClient, type Prisma } from "@prisma/client";
-import { calcLine, ymdToDate, type LineInput } from "shared";
+import { calcLine, ymdToDate, type LineInput } from "../../shared/src";
 
 const prisma = new PrismaClient();
 

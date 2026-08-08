@@ -1,6 +1,9 @@
 import bcrypt from "bcryptjs";
 import { Router } from "express";
-import { loginSchema, signupSchema } from "shared";
+// Relative import (not the bare "shared" specifier): Vercel's function compiler
+// only compiles TypeScript it can trace through relative paths — a bare import
+// resolves to the workspace package whose main is a .ts file Node can't load.
+import { loginSchema, signupSchema } from "../../../shared/src";
 import { clearAuthCookie, setAuthCookie } from "../auth";
 import { prisma } from "../db";
 import { AppError, wrap } from "../errors";
