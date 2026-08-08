@@ -7,6 +7,8 @@ import { api } from "@/lib/api";
 import { useLoad } from "@/lib/useLoad";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { AddLineForm } from "@/features/documents/AddLineForm";
+import { DuplicateButton } from "@/features/documents/DuplicateButton";
+import { FinalizeButton } from "@/features/documents/FinalizeButton";
 import { LineTable } from "@/features/documents/LineTable";
 import { MetadataForm } from "@/features/documents/MetadataForm";
 import { StatusBadge } from "@/features/documents/StatusBadge";
@@ -21,7 +23,7 @@ import type { DocumentDto } from "@/lib/types";
 export const DocumentEditorPage = () => {
   const { id } = useParams<{ id: string }>();
 
-  const [lineActionError, setLineActionError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // Totals position survives reloads — long-document users set it once.
   const [totalsPinned, setTotalsPinned] = useState(() => localStorage.getItem("totalsPinned") === "1");
@@ -70,8 +72,22 @@ export const DocumentEditorPage = () => {
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold">{doc.title}</h1>
           <StatusBadge status={doc.status} />
+          <span className="flex-1" />
+          <DuplicateButton doc={doc} onError={setActionError} />
+          {doc.status === "draft" && (
+            <FinalizeButton
+              doc={doc}
+              onChange={(updated) => {
+                setActionError(null);
+                setData(() => updated);
+              }}
+              onError={setActionError}
+            />
+          )}
         </div>
       </div>
+
+      <ErrorAlert message={actionError} />
 
       <MetadataForm doc={doc} onChange={(updated) => setData(() => updated)} />
 
@@ -90,8 +106,6 @@ export const DocumentEditorPage = () => {
 
       {totalsPinned && <TotalsCard doc={doc} pinned onTogglePinned={toggleTotalsPinned} />}
 
-      <ErrorAlert message={lineActionError} />
-
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Line items</CardTitle>
@@ -100,10 +114,10 @@ export const DocumentEditorPage = () => {
           <LineTable
             doc={doc}
             onChange={(updated) => {
-              setLineActionError(null);
+              setActionError(null);
               setData(() => updated);
             }}
-            onError={setLineActionError}
+            onError={setActionError}
           />
         </CardContent>
       </Card>
