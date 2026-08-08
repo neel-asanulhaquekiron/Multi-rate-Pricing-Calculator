@@ -128,3 +128,13 @@
     @apply font-sans;
     }
 }
+/* --- Print (invoice view) ------------------------------------------------ */
+@media print {
+  tr {
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 18mm 14mm;
+  }
+}
