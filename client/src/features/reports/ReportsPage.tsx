@@ -3,8 +3,9 @@ import { useState } from "react";
 import { formatMoney } from "shared";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api";
-import { monthStartYmd, todayYmd } from "@/lib/localDate";
+import { lastMonthRange, monthStartYmd, todayYmd, yearStartYmd } from "@/lib/localDate";
 import { useLoad } from "@/lib/useLoad";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { Field } from "@/components/Field";
@@ -21,6 +22,12 @@ export const ReportsPage = () => {
   // Defaults: the browser's current month so far (1st -> today).
   const [from, setFrom] = useState(monthStartYmd());
   const [to, setTo] = useState(todayYmd());
+
+  const presets = [
+    { label: "This month", from: monthStartYmd(), to: todayYmd() },
+    { label: "Last month", ...lastMonthRange() },
+    { label: "This year", from: yearStartYmd(), to: todayYmd() },
+  ];
 
   // Invalid ranges reject locally through the same error path the API uses —
   // one rendering pipeline, zero wasted requests.
@@ -48,6 +55,24 @@ export const ReportsPage = () => {
           <Field id="report-to" label="To">
             <Input id="report-to" type="date" value={to} onChange={(event) => setTo(event.target.value)} />
           </Field>
+        </div>
+        <div className="flex gap-2 self-end pb-px">
+          {presets.map((preset) => {
+            const active = from === preset.from && to === preset.to;
+            return (
+              <Button
+                key={preset.label}
+                variant={active ? "secondary" : "outline"}
+                size="sm"
+                onClick={() => {
+                  setFrom(preset.from);
+                  setTo(preset.to);
+                }}
+              >
+                {preset.label}
+              </Button>
+            );
+          })}
         </div>
       </div>
 
