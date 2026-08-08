@@ -70,22 +70,27 @@ export const DocumentEditorPage = () => {
           <ArrowLeft className="h-4 w-4" aria-hidden />
           Back to documents
         </Link>
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold">{doc.title}</h1>
-          <StatusBadge status={doc.status} />
-          <span className="flex-1" />
-          <PrintViewButton doc={doc} />
-          <DuplicateButton doc={doc} onError={setActionError} />
-          {doc.status === "draft" && (
-            <FinalizeButton
-              doc={doc}
-              onChange={(updated) => {
-                setActionError(null);
-                setData(() => updated);
-              }}
-              onError={setActionError}
-            />
-          )}
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <h1 className="truncate text-2xl font-bold" title={doc.title}>
+              {doc.title}
+            </h1>
+            <StatusBadge status={doc.status} />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <PrintViewButton doc={doc} />
+            <DuplicateButton doc={doc} onError={setActionError} />
+            {doc.status === "draft" && (
+              <FinalizeButton
+                doc={doc}
+                onChange={(updated) => {
+                  setActionError(null);
+                  setData(() => updated);
+                }}
+                onError={setActionError}
+              />
+            )}
+          </div>
         </div>
       </div>
 
