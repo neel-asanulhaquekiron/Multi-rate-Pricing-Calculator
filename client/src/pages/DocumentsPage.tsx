@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { api, ApiError } from "../api";
 import { ErrorAlert } from "../components/ErrorAlert";
+import { NewDocumentDialog } from "../components/NewDocumentDialog";
 import { StatusBadge } from "../components/StatusBadge";
 import type { DocumentDto } from "../types";
 
@@ -33,7 +34,7 @@ export const DocumentsPage = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Documents</h1>
-        {/* "New document" button lands in 6.3.2 */}
+        <NewDocumentDialog />
       </div>
 
       {state.status === "loading" && (
