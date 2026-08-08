@@ -63,12 +63,20 @@ export const ReportsPage = () => {
       {state.status === "error" && <ErrorAlert message={state.message} />}
 
       {state.status === "ready" && (
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatCard label="Documents" value={String(state.data.documentCount)} icon={FileText} />
-          <StatCard label="Grand total" value={`$${formatMoney(state.data.grandTotalCents)}`} icon={Wallet} />
-          <StatCard label="Total tax" value={`$${formatMoney(state.data.taxCents)}`} icon={Percent} />
-          <StatCard label="Total discount" value={`$${formatMoney(state.data.discountCents)}`} icon={TicketPercent} />
-        </div>
+        <>
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <StatCard label="Documents" value={String(state.data.documentCount)} icon={FileText} />
+            <StatCard label="Grand total" value={`$${formatMoney(state.data.grandTotalCents)}`} icon={Wallet} />
+            <StatCard label="Total tax" value={`$${formatMoney(state.data.taxCents)}`} icon={Percent} />
+            <StatCard label="Total discount" value={`$${formatMoney(state.data.discountCents)}`} icon={TicketPercent} />
+          </div>
+          {state.data.documentCount === 0 && (
+            <p className="rounded-lg border border-dashed py-6 text-center text-sm text-muted-foreground">
+              No documents were issued between {from} and {to} — totals are zero. Drafts count too, so try a wider
+              range.
+            </p>
+          )}
+        </>
       )}
     </div>
   );
