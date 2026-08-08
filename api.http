@@ -53,3 +53,92 @@ Content-Type: application/json
 
 ### Unknown endpoint — expect JSON 404
 GET {{baseUrl}}/api/nope
+
+###############################################################################
+# Documents (login first — these need the session cookie)
+###############################################################################
+
+### List my documents
+GET {{baseUrl}}/api/documents
+
+### Create a document — expect 201, zero totals; COPY THE id FROM THE RESPONSE
+# @name createDoc
+POST {{baseUrl}}/api/documents
+Content-Type: application/json
+
+{
+  "title": "My first quote",
+  "customer": "Acme Corp",
+  "issueDate": "2026-08-08"
+}
+
+@createResponseId = 0bd479f4-9208-46d5-b69a-b4c31b33a466
+
+### Add Widget A (2 x 100.00, -10%, +5%) — replace :id with the document id
+POST {{baseUrl}}/api/documents/{{createResponseId}}/lines
+Content-Type: application/json
+
+{
+  "description": "Widget A",
+  "quantity": 2,
+  "unitPriceCents": 10000,
+  "discount": { "type": "percent", "bp": 1000 },
+  "taxBp": 500
+}
+
+### Add Widget B (1 x 50.00, +5%)
+POST {{baseUrl}}/api/documents/{{createResponseId}}/lines
+Content-Type: application/json
+
+{
+  "description": "Widget B",
+  "quantity": 1,
+  "unitPriceCents": 5000,
+  "taxBp": 500
+}
+
+### Add Service fee (1 x 200.00, -$20 fixed) — totals should hit 42150 (421.50)
+POST {{baseUrl}}/api/documents/{{createResponseId}}/lines
+Content-Type: application/json
+
+{
+  "description": "Service fee",
+  "quantity": 1,
+  "unitPriceCents": 20000,
+  "discount": { "type": "fixed", "cents": 2000 }
+}
+
+### Get the document with lines + totals
+GET {{baseUrl}}/api/documents/{{createResponseId}}
+
+### Finalize it — expect 200, status "finalized"
+POST {{baseUrl}}/api/documents/{{createResponseId}}/finalize
+
+### Try to edit after finalize — expect 409 DOCUMENT_FINALIZED
+PUT {{baseUrl}}/api/documents/{{createResponseId}}
+Content-Type: application/json
+
+{
+  "title": "Should fail",
+  "customer": "Acme Corp",
+  "issueDate": "2026-08-08"
+}
+
+### Duplicate into a new draft — expect 201, "(copy)" title
+POST {{baseUrl}}/api/documents/{{createResponseId}}/duplicate
+Content-Type: application/json
+
+{
+  "issueDate": "2026-08-08"
+}
+
+### Validation demo: fixed discount above subtotal — expect 400 with message
+POST {{baseUrl}}/api/documents/{{createResponseId}}/lines
+Content-Type: application/json
+
+{
+  "description": "Too generous",
+  "quantity": 1,
+  "unitPriceCents": 5000,
+  "discount": { "type": "fixed", "cents": 8000 }
+}
