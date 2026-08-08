@@ -130,17 +130,19 @@ export const AddLineForm = ({ doc, onChange }: AddLineFormProps) => {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
       <ErrorAlert message={error} />
-      <div className="space-y-4">
-        <Field id="line-description" label="Description" error={fieldErrors.description}>
-          <Input
-            id="line-description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-            placeholder="Widget A"
-            aria-invalid={fieldErrors.description !== undefined}
-          />
-        </Field>
-        <div className="grid grid-cols-2 gap-3">
+      <div className="flex flex-wrap items-start gap-3">
+        <div className="min-w-40 flex-1">
+          <Field id="line-description" label="Description" error={fieldErrors.description}>
+            <Input
+              id="line-description"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              placeholder="Widget A"
+              aria-invalid={fieldErrors.description !== undefined}
+            />
+          </Field>
+        </div>
+        <div className="w-20 shrink-0">
           <Field id="line-quantity" label="Qty" error={fieldErrors.quantity}>
             <Input
               id="line-quantity"
@@ -152,6 +154,8 @@ export const AddLineForm = ({ doc, onChange }: AddLineFormProps) => {
               aria-invalid={fieldErrors.quantity !== undefined}
             />
           </Field>
+        </div>
+        <div className="w-32 shrink-0">
           <Field id="line-unit-price" label="Unit price" error={fieldErrors.unitPrice}>
             <MoneyInput
               id="line-unit-price"
@@ -161,7 +165,7 @@ export const AddLineForm = ({ doc, onChange }: AddLineFormProps) => {
             />
           </Field>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="w-44 shrink-0">
           <Field
             id="line-discount"
             label="Discount"
@@ -185,14 +189,22 @@ export const AddLineForm = ({ doc, onChange }: AddLineFormProps) => {
               invalid={fieldErrors.discount !== undefined}
             />
           </Field>
+        </div>
+        <div className="w-24 shrink-0">
           <Field id="line-tax" label="Tax %" error={fieldErrors.tax}>
             <PercentInput id="line-tax" value={tax} onChange={setTax} invalid={fieldErrors.tax !== undefined} />
           </Field>
         </div>
-        <Button type="submit" className="w-full" disabled={submitting}>
-          <Plus className="h-4 w-4" aria-hidden />
-          {submitting ? "Adding…" : "Add line"}
-        </Button>
+        <div className="flex shrink-0 flex-col gap-2">
+          {/* Invisible twin of the Field label row — keeps the button flush with the inputs. */}
+          <span className="invisible h-5 text-sm leading-none font-medium select-none" aria-hidden>
+            Add
+          </span>
+          <Button type="submit" disabled={submitting} aria-label="add line">
+            <Plus className="h-4 w-4" aria-hidden />
+            {submitting ? "Adding…" : "Add"}
+          </Button>
+        </div>
       </div>
     </form>
   );
