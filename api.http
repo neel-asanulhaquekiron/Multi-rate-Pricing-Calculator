@@ -1,0 +1,55 @@
+### Pricing Calculator API — VS Code "REST Client" extension (humao.rest-client)
+### Click "Send Request" above any block. Cookies persist between requests
+### automatically, so run "login" once and the authed requests work.
+
+# Switch to the live URL by swapping the comment on these two lines:
+# @baseUrl = http://localhost:3001
+@baseUrl = https://multi-rate-pricing-calculator-serve-psi.vercel.app
+
+### Health — expect {"ok":true,"db":true}
+GET {{baseUrl}}/api/health
+
+### Login as the seeded demo user — expect 200, sets the session cookie
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "demo@example.com",
+  "password": "demo1234"
+}
+
+### Who am I — expect 200 with demo@example.com (run login first)
+GET {{baseUrl}}/api/auth/me
+
+### Logout — expect 204; running "Who am I" again now gives 401
+POST {{baseUrl}}/api/auth/logout
+
+### Signup a new account — expect 201 (edit the email to rerun, else 409)
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "neel@example.com",
+  "password": "password123"
+}
+
+### Login with wrong password — expect 401 INVALID_CREDENTIALS
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "demo@example.com",
+  "password": "wrong-password"
+}
+
+### Signup with weak password — expect 400 with the specific message
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "weak@example.com",
+  "password": "short"
+}
+
+### Unknown endpoint — expect JSON 404
+GET {{baseUrl}}/api/nope
