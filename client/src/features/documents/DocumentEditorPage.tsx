@@ -21,6 +21,8 @@ import type { DocumentDto } from "@/lib/types";
 export const DocumentEditorPage = () => {
   const { id } = useParams<{ id: string }>();
 
+  const [lineActionError, setLineActionError] = useState<string | null>(null);
+
   // Totals position survives reloads — long-document users set it once.
   const [totalsPinned, setTotalsPinned] = useState(() => localStorage.getItem("totalsPinned") === "1");
   const toggleTotalsPinned = () => {
@@ -88,12 +90,21 @@ export const DocumentEditorPage = () => {
 
       {totalsPinned && <TotalsCard doc={doc} pinned onTogglePinned={toggleTotalsPinned} />}
 
+      <ErrorAlert message={lineActionError} />
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Line items</CardTitle>
         </CardHeader>
         <CardContent>
-          <LineTable lines={doc.lines ?? []} />
+          <LineTable
+            doc={doc}
+            onChange={(updated) => {
+              setLineActionError(null);
+              setData(() => updated);
+            }}
+            onError={setLineActionError}
+          />
         </CardContent>
       </Card>
 
