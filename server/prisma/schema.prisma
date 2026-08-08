@@ -88,7 +88,7 @@ model LineItem {
   taxCents      Int
   totalCents    Int
 
-  /// Stable display order = (createdAt, id) — decision 12B.
+  /// Stable display order = (createdAt, id).
   createdAt DateTime @default(now())
 
   @@index([documentId])

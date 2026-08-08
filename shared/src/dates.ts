@@ -1,5 +1,5 @@
 /**
- * Date-only handling — decision 10A.
+ * Date-only handling.
  *
  * An issue date like "2026-08-08" has no time and no timezone. JS Date forces
  * both, so a date-only value round-tripped through Date shifts by a day for

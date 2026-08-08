@@ -12,7 +12,7 @@ interface LineTableProps {
   onError?: (message: string) => void;
 }
 
-/** Line items with their server-computed amounts (order = createdAt, id — decision 12B). */
+/** Line items with their server-computed amounts (order = createdAt, id). */
 export const LineTable = ({ doc, onChange, onError }: LineTableProps) => {
   const lines = doc.lines ?? [];
   const editable = doc.status === "draft" && onChange !== undefined;

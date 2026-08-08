@@ -18,9 +18,9 @@ export const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Health does a REAL database read (decision 11A): proves the pooled connection
+// Health does a REAL database read: proves the pooled connection
 // works, and the daily Vercel cron hitting this keeps the free-tier DB from
-// pausing before the assignment is graded (decision 7A).
+// pausing before the assignment is graded.
 app.get("/api/health", async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
@@ -39,5 +39,5 @@ app.use("/api", (_req, res) => {
   res.status(404).json({ code: "NOT_FOUND", message: "no such endpoint" });
 });
 
-// Must be registered last — decision 3A: the single error-to-HTTP converter.
+// Must be registered last: the single error-to-HTTP converter.
 app.use(errorHandler);

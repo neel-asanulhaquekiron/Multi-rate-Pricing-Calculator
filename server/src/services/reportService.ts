@@ -2,7 +2,7 @@ import { ymdToDate } from "../../../shared/src";
 import { prisma } from "../db";
 
 /**
- * Summary report — decision 5A makes this one SQL aggregate over the persisted
+ * Summary report makes this one SQL aggregate over the persisted
  * document totals (recomputed transactionally on every write), instead of
  * re-running the math over every line item. Decision 9A fixes the semantics:
  * ALL documents count (drafts included), filter on issueDate, boundaries

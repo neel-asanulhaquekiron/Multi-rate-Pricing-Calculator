@@ -39,7 +39,7 @@ const summary = async (ck: string, from: string, to: string): Promise<request.Re
  * Fixture (user A):
  *   2025-12-31  "before"    — outside (day before 'from' boundary)
  *   2026-01-01  "start"     — ON the from boundary, has a line, gets EDITED
- *   2026-01-15  "mid"       — in range, finalized (drafts AND finalized count — 9A)
+ *   2026-01-15  "mid"       — in range, finalized (drafts AND finalized both count)
  *   2026-01-31  "end"       — ON the to boundary
  *   2026-02-01  "after"     — outside
  * User B gets one in-range doc that must NOT leak into A's report.
@@ -55,7 +55,7 @@ beforeAll(async () => {
   const after = await createDoc(cookie, "2026-02-01", "after");
   docIds.push(before, start, mid, end, after);
 
-  // "start": add a line, then EDIT it — the report must reflect the edit (5A).
+  // "start": add a line, then EDIT it — the report must reflect the edit.
   const added = await addLine(cookie, start, { description: "W", quantity: 1, unitPriceCents: 10000, taxBp: 500 });
   const lineId = added.body.document.lines[0].id;
   await request(app)

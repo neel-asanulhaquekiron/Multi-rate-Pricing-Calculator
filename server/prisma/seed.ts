@@ -52,8 +52,7 @@ const main = async (): Promise<void> => {
     { subtotalCents: 0, discountCents: 0, taxCents: 0, grandTotalCents: 0 },
   );
 
-  // Explicit createdAt increments keep line order stable (decision 12B:
-  // display order is createdAt, id).
+  // Explicit createdAt increments keep display order stable (createdAt, id).
   const base = Date.now();
   const lines: Prisma.LineItemCreateWithoutDocumentInput[] = perLine.map(({ description, input, totals }, i) => ({
     description,

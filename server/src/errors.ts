@@ -2,7 +2,7 @@ import type { ErrorRequestHandler, NextFunction, Request, RequestHandler, Respon
 import { ZodError } from "zod";
 
 /**
- * Error handling — decision 3A: ONE converter from thrown errors to HTTP.
+ * Error handling: ONE converter from thrown errors to HTTP.
  *
  *   route/service throws          errorHandler maps to
  *   ─────────────────────────────────────────────────────────

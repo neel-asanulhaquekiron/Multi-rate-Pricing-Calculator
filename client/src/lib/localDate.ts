@@ -1,5 +1,5 @@
 /**
- * Local-calendar date helpers — decision 10A: date-only values are the user's
+ * Local-calendar date helpers: date-only values are the user's
  * LOCAL calendar date, never the server's UTC clock. All outputs YYYY-MM-DD.
  */
 

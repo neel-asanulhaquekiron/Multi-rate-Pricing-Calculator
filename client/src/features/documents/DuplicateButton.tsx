@@ -12,8 +12,8 @@ interface DuplicateButtonProps {
 }
 
 /**
- * Copies the document (any status — decision 13A) into a fresh draft dated
- * with the BROWSER'S local today (decision 10A) and navigates into it.
+ * Copies the document (any status) into a fresh draft dated
+ * with the BROWSER'S local today and navigates into it.
  * Non-destructive, so no confirmation dialog — the button carries its own
  * busy state instead.
  */

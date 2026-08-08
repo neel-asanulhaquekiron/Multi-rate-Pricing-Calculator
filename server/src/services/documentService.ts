@@ -124,7 +124,7 @@ const lineInputToColumns = (input: LineItemInput) => {
   };
 };
 
-/** Recompute document totals from raw line inputs — decision 5A. */
+/** Recompute document totals from raw line inputs. */
 const recomputeTotals = async (tx: Tx, documentId: string): Promise<void> => {
   const rows = await tx.lineItem.findMany({ where: { documentId }, orderBy: [...LINE_ORDER] });
   const totals = calcDocument(rows.map(rowToCalcInput));
@@ -173,7 +173,7 @@ export const updateDocument = async (userId: string, documentId: string, input: 
 
 export const deleteDocument = async (userId: string, documentId: string): Promise<void> => {
   const doc = await getOwnedDocument(prisma, userId, documentId);
-  // Decision 13A: finalized means immutable INCLUDING delete.
+  // Finalized means immutable INCLUDING delete.
   assertDraft(doc);
   await prisma.document.delete({ where: { id: doc.id } });
 };
@@ -229,7 +229,7 @@ export const finalizeDocument = async (userId: string, documentId: string): Prom
     const doc = await getOwnedDocument(tx, userId, documentId);
     assertDraft(doc);
 
-    // Decision 8A — defense-in-depth: schema + zod already forbid these, but
+    // Defense-in-depth: schema + zod already forbid these, but
     // finalize is the last gate before immutability, so it re-checks the rows
     // actually in the database (its test seeds a bad row bypassing the API).
     const lines = await tx.lineItem.findMany({ where: { documentId: doc.id }, orderBy: [...LINE_ORDER] });
@@ -250,7 +250,7 @@ export const finalizeDocument = async (userId: string, documentId: string): Prom
 export const duplicateDocument = async (userId: string, documentId: string, issueDateYmd: string): Promise<DocumentDto> => {
   let newId = "";
   await prisma.$transaction(async (tx) => {
-    // Duplicate works on ANY status (decision 13A) — it never mutates the source.
+    // Duplicate works on ANY status — it never mutates the source.
     const source = await getOwnedDocument(tx, userId, documentId);
     const lines = await tx.lineItem.findMany({ where: { documentId: source.id }, orderBy: [...LINE_ORDER] });
 
@@ -268,7 +268,7 @@ export const duplicateDocument = async (userId: string, documentId: string, issu
         grandTotalCents: source.grandTotalCents,
         lines: {
           // Copied inputs AND computed cents are identical; staggered createdAt
-          // preserves display order (decision 12B).
+          // preserves display order.
           create: lines.map((line, i) => ({
             description: line.description,
             quantity: line.quantity,

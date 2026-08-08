@@ -187,7 +187,7 @@ describe("line validation", () => {
     expect(res.body.details.map((d: { message: string }) => d.message)).toContain(message);
   });
 
-  it("rejects percent AND fixed on one line — decision 14A", async () => {
+  it("rejects percent AND fixed on one line", async () => {
     const res = await addLine(cookieA, docId, {
       description: "X",
       quantity: 1,
@@ -200,7 +200,7 @@ describe("line validation", () => {
     );
   });
 
-  it("rejects a fixed discount above the line subtotal — decision 1A", async () => {
+  it("rejects a fixed discount above the line subtotal", async () => {
     const res = await addLine(cookieA, docId, {
       description: "X",
       quantity: 1,
@@ -285,7 +285,7 @@ describe("lifecycle", () => {
     expect(again.status).toBe(409);
   });
 
-  it("defense-in-depth (8A): finalize rejects an invalid row seeded PAST the API", async () => {
+  it("defense-in-depth: finalize rejects an invalid row seeded PAST the API", async () => {
     const docId = await createDoc(cookieA, "Tampered");
     // Bypass the API entirely — simulates a bug or manual DB edit.
     await prisma.lineItem.create({
@@ -307,7 +307,7 @@ describe("lifecycle", () => {
   });
 });
 
-describe("duplicate (13A: any status, source untouched)", () => {
+describe("duplicate (any status, source untouched)", () => {
   it("duplicates a finalized document into a fresh draft with equal totals and ordered lines", async () => {
     const docId = await buildSampleDoc(cookieA);
     await request(app).post(`/api/documents/${docId}/finalize`).set("Cookie", cookieA);

@@ -40,7 +40,6 @@ export const NewDocumentDialog = () => {
   const onOpenChange = (next: boolean) => {
     setOpen(next);
     if (next) {
-      // Fresh form every time the dialog opens.
       setTitle("");
       setCustomer("");
       setIssueDate(todayYmd());

@@ -13,7 +13,7 @@ interface FinalizeButtonProps {
 /**
  * The one-way door: draft -> finalized. Confirmed via dialog because there is
  * no way back — finalized documents reject every mutation including delete
- * (decision 13A); duplication into a new draft is the only continuation.
+ *; duplication into a new draft is the only continuation.
  */
 export const FinalizeButton = ({ doc, onChange, onError }: FinalizeButtonProps) => {
   const onConfirm = async () => {

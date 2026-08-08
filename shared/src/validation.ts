@@ -73,7 +73,7 @@ export const documentInputSchema = z.object({
 });
 
 export const duplicateInputSchema = z.object({
-  // Decision 10A: the CLIENT supplies its local "today" — the server's clock
+  // The CLIENT supplies its local "today" — the server's clock
   // lives in a different timezone than the user.
   issueDate: ymdSchema,
 });
@@ -81,7 +81,7 @@ export const duplicateInputSchema = z.object({
 export type DocumentInput = z.infer<typeof documentInputSchema>;
 
 /**
- * Report query — decision 9A: counts ALL documents (drafts included), filters
+ * Report query: counts ALL documents (drafts included), filters
  * on issueDate, boundaries inclusive.
  */
 export const reportQuerySchema = z
@@ -183,7 +183,7 @@ export const lineInputSchema = rawLineSchema
           message: "fixed discount must be a whole number of cents ≥ 0",
         });
       } else if (discount.cents > subtotal) {
-        // Decision 1A: reject, never silently rewrite what the user typed.
+        // Reject — never silently rewrite what the user typed.
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["discount", "cents"],
