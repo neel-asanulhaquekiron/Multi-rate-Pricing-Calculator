@@ -1,17 +1,7 @@
 import { Trash2 } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import type { DocumentDto } from "@/lib/types";
 
 interface DeleteDraftButtonProps {
@@ -28,41 +18,28 @@ export const DeleteDraftButton = ({ doc, onDeleted, onError }: DeleteDraftButton
       onDeleted(doc.id);
     } catch (err) {
       onError(err instanceof ApiError ? err.message : "failed to delete document");
+      throw err; // keep the dialog open
     }
   };
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-destructive"
-            aria-label={`delete ${doc.title}`}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <Trash2 className="h-4 w-4" aria-hidden />
-          </Button>
-        }
-      />
-      <AlertDialogContent onClick={(event) => event.stopPropagation()}>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete "{doc.title}"?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This permanently removes the draft and its line items. This cannot be undone.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            className="bg-destructive text-white hover:bg-destructive/90"
-            onClick={onConfirm}
-          >
-            Delete draft
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ConfirmDialog
+      trigger={
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-muted-foreground hover:text-destructive"
+          aria-label={`delete ${doc.title}`}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <Trash2 className="h-4 w-4" aria-hidden />
+        </Button>
+      }
+      title={`Delete "${doc.title}"?`}
+      description="This permanently removes the draft and its line items. This cannot be undone."
+      actionLabel="Delete draft"
+      busyLabel="Deleting…"
+      onConfirm={onConfirm}
+    />
   );
 };
