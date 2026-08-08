@@ -336,7 +336,7 @@ describe("duplicate (13A: any status, source untouched)", () => {
     // The copy is a real draft: editable.
     const edit = await addLine(cookieA, copy.id, sampleLines[1]);
     expect(edit.status).toBe(201);
-  });
+  }, 30000); // ~14 API calls against a remote DB — needs more than the default budget
 
   it("duplicates a draft too", async () => {
     const docId = await createDoc(cookieA, "Draft original");
