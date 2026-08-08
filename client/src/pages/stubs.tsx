@@ -3,10 +3,6 @@
  * Each stub is replaced by its real page in steps 6.3-6.6.
  */
 
-export const DocumentsPage = () => {
-  return <p className="text-muted-foreground">Document list — coming in 6.3</p>;
-};
-
 export const DocumentEditorPage = () => {
   return <p className="text-muted-foreground">Document editor — coming in 6.4</p>;
 };
