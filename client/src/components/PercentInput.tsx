@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 interface PercentInputProps {
   id: string;
@@ -6,13 +7,14 @@ interface PercentInputProps {
   onChange: (value: string) => void;
   invalid?: boolean;
   placeholder?: string;
+  className?: string;
 }
 
 /**
  * Percent input (% suffix, decimal keypad). Raw string; parsed to basis
  * points at submit via shared parsePercent.
  */
-export const PercentInput = ({ id, value, onChange, invalid, placeholder }: PercentInputProps) => {
+export const PercentInput = ({ id, value, onChange, invalid, placeholder, className }: PercentInputProps) => {
   return (
     <div className="relative">
       <Input
@@ -22,7 +24,7 @@ export const PercentInput = ({ id, value, onChange, invalid, placeholder }: Perc
         onChange={(event) => onChange(event.target.value)}
         aria-invalid={invalid}
         placeholder={placeholder ?? "0"}
-        className="pr-7"
+        className={cn("pr-7", className)}
       />
       <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-muted-foreground">
         %
