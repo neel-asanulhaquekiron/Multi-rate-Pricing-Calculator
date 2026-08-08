@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { signupSchema } from "shared";
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
+import { PasswordInput } from "../components/PasswordInput";
 
 interface FieldErrors {
   email?: string;
@@ -78,13 +79,12 @@ export const SignupPage = () => {
         </div>
         <div className="field">
           <label htmlFor="password">Password</label>
-          <input
+          <PasswordInput
             id="password"
-            type="password"
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={setPassword}
             autoComplete="new-password"
-            aria-invalid={fieldErrors.password !== undefined}
+            invalid={fieldErrors.password !== undefined}
           />
           {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
         </div>

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
+import { PasswordInput } from "../components/PasswordInput";
 
 export const LoginPage = () => {
   const { user, login } = useAuth();
@@ -56,14 +57,7 @@ export const LoginPage = () => {
         </div>
         <div className="field">
           <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete="current-password"
-            required
-          />
+          <PasswordInput id="password" value={password} onChange={setPassword} autoComplete="current-password" />
         </div>
         <button type="submit" className="btn btn-primary" disabled={submitting}>
           {submitting ? "Logging in…" : "Log in"}
