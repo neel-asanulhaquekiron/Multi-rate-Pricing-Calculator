@@ -15,11 +15,17 @@ export interface ReportSummary {
   discountCents: number;
 }
 
-export const getSummary = async (userId: string, fromYmd: string, toYmd: string): Promise<ReportSummary> => {
+export const getSummary = async (
+  userId: string,
+  fromYmd: string,
+  toYmd: string,
+  status: "all" | "finalized" = "all",
+): Promise<ReportSummary> => {
   const result = await prisma.document.aggregate({
     where: {
       userId,
       issueDate: { gte: ymdToDate(fromYmd), lte: ymdToDate(toYmd) },
+      ...(status === "finalized" ? { status: "finalized" as const } : {}),
     },
     _count: { _all: true },
     _sum: { grandTotalCents: true, taxCents: true, discountCents: true },
