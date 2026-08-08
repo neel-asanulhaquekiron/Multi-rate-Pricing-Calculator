@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
-import { useState, type FormEvent } from "react";
-import { lineInputSchema, parseMoney, parsePercent, type Discount } from "shared";
+import { useMemo, useState, type FormEvent } from "react";
+import { calcLine, lineInputSchema, parseMoney, parsePercent, type Discount } from "shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api, ApiError } from "@/lib/api";
@@ -10,6 +10,7 @@ import { MoneyInput } from "@/components/MoneyInput";
 import { PercentInput } from "@/components/PercentInput";
 import { DiscountInput, type DiscountKind } from "@/features/documents/DiscountInput";
 import { DiscountKindToggle } from "@/features/documents/DiscountKindToggle";
+import { LinePreview } from "@/features/documents/LinePreview";
 import type { DocumentDto } from "@/lib/types";
 
 interface AddLineFormProps {
@@ -40,6 +41,31 @@ export const AddLineForm = ({ doc, onChange }: AddLineFormProps) => {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Live preview of the line being typed — the shared calc module running in
+  // the browser. Null (no preview) whenever the current inputs don't parse.
+  const previewTotals = useMemo(() => {
+    if (unitPrice.trim() === "") {
+      return null;
+    }
+    try {
+      let discount: Discount = null;
+      if (discountKind === "percent") {
+        discount = { type: "percent", bp: parsePercent(discountValue || "0") };
+      }
+      if (discountKind === "fixed") {
+        discount = { type: "fixed", cents: parseMoney(discountValue || "0") };
+      }
+      return calcLine({
+        quantity: Number(quantity),
+        unitPriceCents: parseMoney(unitPrice),
+        discount,
+        taxBp: tax.trim() === "" ? null : parsePercent(tax),
+      });
+    } catch {
+      return null;
+    }
+  }, [quantity, unitPrice, discountKind, discountValue, tax]);
 
   const reset = () => {
     setDescription("");
@@ -206,6 +232,7 @@ export const AddLineForm = ({ doc, onChange }: AddLineFormProps) => {
           </Button>
         </div>
       </div>
+      <LinePreview totals={previewTotals} docGrandTotalCents={doc.grandTotalCents} />
     </form>
   );
 };
