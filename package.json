@@ -1,0 +1,9 @@
+{
+  "name": "multi-rate-pricing-calculator",
+  "private": true,
+  "workspaces": ["shared", "server", "client"],
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "dev": "npm run dev -w server"
+  }
+}
