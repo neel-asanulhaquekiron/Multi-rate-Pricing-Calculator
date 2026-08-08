@@ -3,10 +3,6 @@
  * Each stub is replaced by its real page in steps 6.2-6.6.
  */
 
-export const SignupPage = () => {
-  return <p>Signup page — coming in 6.2</p>;
-};
-
 export const DocumentsPage = () => {
   return <p>Document list — coming in 6.3</p>;
 };
