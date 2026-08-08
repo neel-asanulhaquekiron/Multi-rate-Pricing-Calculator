@@ -1,0 +1,20 @@
+// All tables live in the dedicated "calculator" schema (set via ?schema= in the
+// connection URLs) on a shared Supabase Postgres — isolated from the other app
+// on this database by schema + a low-privilege role that owns only this schema.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
