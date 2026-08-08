@@ -80,6 +80,22 @@ export const duplicateInputSchema = z.object({
 
 export type DocumentInput = z.infer<typeof documentInputSchema>;
 
+/**
+ * Report query — decision 9A: counts ALL documents (drafts included), filters
+ * on issueDate, boundaries inclusive.
+ */
+export const reportQuerySchema = z
+  .object({
+    from: ymdSchema.describe("start of the range"),
+    to: ymdSchema.describe("end of the range"),
+  })
+  .refine((range) => range.from <= range.to, {
+    message: "'from' must be on or before 'to'",
+    path: ["from"],
+  });
+
+export type ReportQuery = z.infer<typeof reportQuerySchema>;
+
 // ---------------------------------------------------------------------------
 // Line items
 // ---------------------------------------------------------------------------
