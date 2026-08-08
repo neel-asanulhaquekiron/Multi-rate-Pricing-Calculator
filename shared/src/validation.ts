@@ -88,6 +88,11 @@ export const reportQuerySchema = z
   .object({
     from: ymdSchema.describe("start of the range"),
     to: ymdSchema.describe("end of the range"),
+    status: z
+      .enum(["all", "finalized"], {
+        errorMap: () => ({ message: "status must be \"all\" or \"finalized\"" }),
+      })
+      .default("all"),
   })
   .refine((range) => range.from <= range.to, {
     message: "'from' must be on or before 'to'",
