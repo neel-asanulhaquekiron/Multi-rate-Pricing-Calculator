@@ -36,6 +36,9 @@ export const Layout = () => {
             <NavLink to="/reports" className={navLinkClass}>
               Report
             </NavLink>
+            <NavLink to="/about" className={navLinkClass}>
+              About Me
+            </NavLink>
             <span className="flex-1" />
             <span className="hidden truncate text-xs text-muted-foreground md:inline" title={user.email}>
               {user.email}
@@ -57,6 +60,9 @@ export const Layout = () => {
           </>
         ) : (
           <>
+            <NavLink to="/about" className={navLinkClass}>
+              About Me
+            </NavLink>
             <span className="flex-1" />
             <NavLink to="/login" className={navLinkClass}>
               Log in

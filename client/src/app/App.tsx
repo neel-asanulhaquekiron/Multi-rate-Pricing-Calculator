@@ -7,11 +7,12 @@ import { SignupPage } from "@/features/auth/SignupPage";
 import { DocumentEditorPage } from "@/features/documents/DocumentEditorPage";
 import { PrintPage } from "@/features/documents/PrintPage";
 import { ReportsPage } from "@/features/reports/ReportsPage";
+import { AboutPage } from "@/features/about/AboutPage";
 
 /**
  * Route map:
  *   /            → redirect to /documents
- *   /login,/signup            public
+ *   /login,/signup,/about     public
  *   /documents                ┐
  *   /documents/:id            │ behind RequireAuth
  *   /documents/:id/print      │ (401 anywhere also lands here via auth context)
@@ -24,6 +25,7 @@ export const App = () => {
         <Route path="/" element={<Navigate to="/documents" replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route element={<RequireAuth />}>
           <Route path="/documents" element={<DocumentsPage />} />
           <Route path="/documents/:id" element={<DocumentEditorPage />} />
