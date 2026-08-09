@@ -8,6 +8,7 @@ import { useAuth } from "@/features/auth/AuthContext";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { Field } from "@/components/Field";
 import { PasswordInput } from "@/features/auth/PasswordInput";
+import { DemoCredentials } from "@/features/auth/DemoCredentials";
 
 export const LoginPage = () => {
   const { user, login } = useAuth();
@@ -41,39 +42,42 @@ export const LoginPage = () => {
   };
 
   return (
-    <Card className="mx-auto mt-12 max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-xl">Log in</CardTitle>
-      </CardHeader>
-      <form onSubmit={onSubmit}>
-        <CardContent className="space-y-4">
-          <ErrorAlert message={error} />
-          <Field id="email" label="Email">
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="email"
-              required
-            />
-          </Field>
-          <Field id="password" label="Password">
-            <PasswordInput id="password" value={password} onChange={setPassword} autoComplete="current-password" />
-          </Field>
-        </CardContent>
-        <CardFooter className="mt-6 flex-col gap-3">
-          <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Logging in…" : "Log in"}
-          </Button>
-          <p className="text-sm text-muted-foreground">
-            No account?{" "}
-            <Link to="/signup" className="underline underline-offset-4 hover:text-foreground">
-              Sign up
-            </Link>
-          </p>
-        </CardFooter>
-      </form>
-    </Card>
+    <div className="mx-auto mt-12 max-w-sm space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">Log in</CardTitle>
+        </CardHeader>
+        <form onSubmit={onSubmit}>
+          <CardContent className="space-y-4">
+            <ErrorAlert message={error} />
+            <Field id="email" label="Email">
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                autoComplete="email"
+                required
+              />
+            </Field>
+            <Field id="password" label="Password">
+              <PasswordInput id="password" value={password} onChange={setPassword} autoComplete="current-password" />
+            </Field>
+          </CardContent>
+          <CardFooter className="mt-6 flex-col gap-3">
+            <Button type="submit" className="w-full" disabled={submitting}>
+              {submitting ? "Logging in…" : "Log in"}
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              No account?{" "}
+              <Link to="/signup" className="underline underline-offset-4 hover:text-foreground">
+                Sign up
+              </Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
+      <DemoCredentials />
+    </div>
   );
 };
