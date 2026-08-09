@@ -1,4 +1,4 @@
-import { Globe, Mail, MapPin, User } from "lucide-react";
+import { Code, Globe, Mail, MapPin, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -66,6 +66,12 @@ export const AboutPage = () => {
           </div>
           <div className="flex items-center gap-2">
             <Globe className="h-4 w-4 text-muted-foreground" aria-hidden />
+            <a href="https://asanulhaque.com" target="_blank" rel="noreferrer" className="hover:underline">
+              asanulhaque.com
+            </a>
+          </div>
+          <div className="flex items-center gap-2">
+            <Code className="h-4 w-4 text-muted-foreground" aria-hidden />
             <a
               href="https://github.com/neel-asanulhaquekiron"
               target="_blank"
