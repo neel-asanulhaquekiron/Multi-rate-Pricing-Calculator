@@ -1,4 +1,4 @@
-import { LogOut } from "lucide-react";
+import { Calculator, LogOut } from "lucide-react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -7,8 +7,10 @@ import { useAuth } from "@/features/auth/AuthContext";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }): string => {
   return cn(
-    "shrink-0 text-sm font-medium whitespace-nowrap transition-colors hover:text-foreground",
-    isActive ? "text-foreground" : "text-muted-foreground",
+    "shrink-0 rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors",
+    isActive
+      ? "bg-primary text-primary-foreground"
+      : "text-muted-foreground hover:bg-muted hover:text-foreground",
   );
 };
 
@@ -25,8 +27,11 @@ export const Layout = () => {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <nav className="flex h-14 items-center gap-3 border-b bg-card px-4 sm:gap-6 sm:px-6 print:hidden">
-        <Link to="/documents" className="shrink-0 font-bold whitespace-nowrap">
-          Pricing Calculator
+        <Link to="/documents" aria-label="home" className="flex shrink-0 items-center gap-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Calculator className="h-4.5 w-4.5" aria-hidden />
+          </span>
+          <span className="hidden font-bold whitespace-nowrap lg:inline">PriceCalc</span>
         </Link>
         {user ? (
           <>
